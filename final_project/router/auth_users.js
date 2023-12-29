@@ -52,14 +52,40 @@ regd_users.post("/login", (req, res) => {
     }
     return res.status(200).send("User successfully logged in");
   } else {
-    return res.status(208).json({ message: "Invalid Login. Check username and password" });
+    return res.status(208).json({ message: "login error check username and password" });
   }
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+
+  const isbn = req.params.isbn;
+  let selected_book = books[isbn]
+  if (selected_book) {
+    let review = req.query.review;
+    let reviewer = req.session.authorization['username'];
+    if (review) {
+      selected_book['reviews'][reviewer] = review;
+      books[isbn] = selected_book;
+    }
+    res.send(`Review with isbn number  ${isbn} has been updated.`);
+  }
+  else {
+    res.send("Error with isbn number");
+  }
+});
+
+// Delete a book review 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const isbn = req.params.isbn;
+  let userReview = req.session.authorization['username'];
+  let selected_review = books[isbn]["reviews"];
+  if (selected_review[userReview]) {
+    delete selected_review[userReview];
+    res.send(`Reviews for the ISBN  ${isbn} posted by the user ${userReview} deleted.`);
+  } else {
+    res.send("Review not found");
+  }
 });
 
 module.exports.authenticated = regd_users;

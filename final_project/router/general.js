@@ -27,11 +27,35 @@ public_users.get('/', function (req, res) {
   res.send(JSON.stringify(books, null, 4));
 });
 
+//asych/await for books available in the shop
+public_users.get('/books', async function (req, res) {
+  try {
+    await new Promise((resolve) => {
+      resolve(res.send(JSON.stringify({ books }, null, 4)));
+    });
+    console.log("Promise for Task 10 resolved");
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+});
+
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
   //Write your code here
   const isbn = req.params.isbn;
   res.send(books[isbn]);
+});
+
+//AaAw for finding books by isbn
+public_users.get('/isbn/:isbn', async function (req, res) {
+  try {
+    await new Promise((resolve) => {
+      resolve(res.send(JSON.stringify({ isbn }, null, 4)));
+    });
+    console.log("Promise for Task 11 resolved");
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
 });
 
 // Get book details based on author
